@@ -19,6 +19,7 @@ services:
   web:
     build: .
     container_name: django_app
+    restart: always
     command: >
       sh -c "python ./djangoevaluation/manage.py migrate &&
              python ./djangoevaluation/manage.py collectstatic --noinput &&
