@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  db:
+    image: mysql:8.0
+    container_name: mysql_evaluation
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: Hitema2025
+      MYSQL_DATABASE: sakila
+      MYSQL_USER: hitema
+      MYSQL_PASSWORD: Hitema2025
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+
+  web:
+    build: .
+    container_name: django_app
+    command: >
+      sh -c "python ./djangoevaluation/manage.py migrate &&
+             python ./djangoevaluation/manage.py collectstatic --noinput &&
+             python ./djangoevaluation/manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    environment:
+      - DB_NAME=sakila
+      - DB_USER=hitema
+      - DB_PASSWORD=Hitema2025
+      - DB_HOST=db
+
+volumes:
+  db_data:
